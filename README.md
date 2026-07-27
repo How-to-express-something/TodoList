@@ -1,229 +1,114 @@
-# TodoList — Personal Local Task Manager
+# TodoList — 个人本地代办事务系统
 
-A self-contained, fully local task management web app with white noise, immersion mode, and a tree-structured idea capture system. All data lives on your disk — no cloud, no servers, no internet required.
-
----
-
-## Features
-
-### 📋 Task Management
-- Create, edit, rename, and delete tasks (todos)
-- Start / Pause / Resume / Complete with **live time tracking**
-- Each task accumulates total focused time across sessions
-- Server auto-saves if killed unexpectedly
-
-### 🧘 Immersion Mode
-- One-click "Start" from the task list → enters full‑screen zen mode
-- Shows a live timer + task title + New Idea sidebar
-- Pause / Continue toggle **on the same screen** — no page switching
-- Exit returns to the task list, still in the same session
-
-### 💡 New Idea System
-- While in immersion mode, type ideas in the left panel (Enter to add)
-- **Promote** any idea to a full task with one click
-- **Tree view** at `/ideas`: all ideas grouped hierarchically
-  - Create nested child ideas (recursive)
-  - **Drag & drop** to re-parent ideas or assign to categories
-  - Drag to **root drop zone** to detach from parent
-- Export the entire idea tree as **TXT**, **Markdown**, or **Word (.doc)**
-
-### 📁 Category System
-- Organize ideas into customizable categories
-- Each category has a **color** (picked from 15 distinct colors, auto-assigns unused)
-- Categories show as colored badges on idea nodes
-- Filter ideas by category in the tree view
-- Drag ideas directly onto a category in the sidebar to assign
-
-### 🎵 White Noise
-- Upload audio files (mp3, wav, ogg, m4a, flac, webm — up to 200 MB)
-- Play / pause from the sidebar mini-player or immersion mode controls
-- **Auto‑play** when starting a task, **auto‑pause** when completing/pausing
-- Track progress bar + volume slider in immersion mode
-- Switch tracks via dropdown or immersion music controls
-
-### ⏱ Time Tracking & Level System
-- Every task logs **time segments** (start → pause / complete)
-- Profile page (`/profile`) shows:
-  - Total focused time across all tasks
-  - **Level progression** based on cumulative hours
-    - Lv.1 = 0h → Lv.2 = 5h → Lv.3 = 15h → Lv.4 = 30h → ... → Lv.9 = 800h
-  - XP‑style progress bar to next level
-  - Completed task count
-
-### 📋 System Logs
-- Every action is logged (DB + file at `server/logs/app.log`)
-- View logs at `/logs` in a dark monospace terminal style
-- Clear logs from the UI
+纯本地化的个人事务管理网站，内置白噪声系统、沉浸式专注模式、树状灵感（New Idea）记录系统。所有数据保存在本地磁盘，无需联网，无需注册。
 
 ---
 
-## Screenshots (Routes)
+## 功能一览
 
-| Route | Description |
-|---|---|
-| `/todos` | Task list — create, start, pause, complete, delete |
-| `/todos/:id` | Immersion mode (auto‑entered on Start) |
-| `/ideas` | New Idea tree view with drag & drop + category filter |
-| `/categories` | Manage categories, assign colors |
-| `/audio` | Upload and manage white noise tracks |
-| `/profile` | Stats, level, white noise controls, logs shortcut |
-| `/logs` | System event log |
+### 事务管理
+- 创建、编辑、重命名、删除事务
+- **开始 / 暂停 / 继续 / 完成** 支持实时计时
+- 每次专注时长自动累计，跨会话保留
+- 服务器意外退出时自动保存当前时段
 
----
+### 沉浸模式
+- 事务列表点击「开始」→ 一键进入全屏沉浸视图
+- 显示实时计时器 + 事务标题 + New Idea 侧面板
+- 暂停/继续按钮**原地切换**，无需跳转页面
+- 退出返回事务列表，会话状态不变
 
-## Quick Start
+### New Idea 灵感记录
+- 沉浸模式下左侧面板随时记录想法（Enter 发送）
+- **一键提升**为正式事务
+- `/ideas` 页面：**树状结构**展示所有灵感
+  - 支持无限嵌套子想法
+  - **拖拽**改变层级关系或分配到分类
+  - 拖到**根区域**脱离父节点
+- 导出整个灵感树为 **TXT / Markdown / Word (.doc)**
 
-### Prerequisites
-- **Node.js** ≥ 18 (tested on v24)
+### 分类系统
+- 自定义分类目录，每条灵感可归属一个分类
+- 每个分类有独立**颜色**（15 种区分色，自动分配未使用的）
+- 分类名称以**文字颜色**显示（半透明底色）
+- 灵感树中可按分类筛选
+- 将灵感直接**拖拽到分类**完成分配
+
+### 白噪声
+- 支持上传 mp3 / wav / ogg / m4a / flac / webm（上限 200MB）
+- 侧栏迷你播放器或沉浸模式控件均可播放/暂停
+- 开始事务**自动播放**、暂停/完成**自动暂停**
+- 沉浸模式中有播放进度条 + 音量滑块
+- 多曲目间切换
+
+### 计时与等级系统
+- 每个事务自动记录**时间片段**（开始 → 暂停/完成）
+- `/profile` 个人页面展示：
+  - 所有事务累计专注总时长
+  - **等级阶梯**（按累计小时数）
+    - Lv.1 0h → Lv.2 5h → Lv.3 15h → Lv.4 30h → ... → Lv.9 800h
+  - 经验值进度条，直观看到距下一级还有多远
+  - 已完成事务数量
+
+### 系统日志
+- 所有操作记录到数据库 + 文件 `server/logs/app.log`
+- `/logs` 页面查看，暗色终端风格
+- 可一键清空
+
+
+
+## 快速开始
+
+### 环境要求
+- **Node.js** ≥ 18（已在 v24 测试通过）
 - **npm** ≥ 9
 
-### Setup
+### 安装
 
 ```bash
-# Clone (or copy the repo)
-git clone <repo-url> TodoList
+# 克隆或复制项目
+git clone <仓库地址> TodoList
 cd TodoList
 
-# Install all dependencies
+# 安装所有依赖
 npm install
 cd server && npm install && cd ..
 cd client && npm install && cd ..
 ```
 
-### Run
+### 启动
 
-**Double-click** `start.bat` (Windows), or:
+**Windows 用户：直接双击 `start.bat`**
+
+或在终端中：
 
 ```bash
 npm run dev
 ```
 
-This starts both:
-- **Backend** → `http://localhost:3001` (Express + SQLite)
-- **Frontend** → `http://localhost:5173` (Vite + React)
+这条命令同时启动：
+- **后端** → `http://localhost:3001`（Express + SQLite）
+- **前端** → `http://localhost:5173`（Vite + React）
 
-Open `http://localhost:5173` in your browser.
+打开浏览器访问 `http://localhost:5173`。
 
-### First Run
-- The database is created automatically at `server/data/todolist.db`
-- Sample data (5 categories, 4 tasks, 11 ideas) is pre-loaded
-- Upload your own audio files at `/audio` to enable white noise
+### 首次使用
+- 数据库在首次启动时自动创建（`server/data/todolist.db`）
+- 自动生成**示例数据**：5 个分类、4 个示例事务、11 条灵感（含嵌套树）
+- 自动生成**默认白噪声**：🌧 雨声、🌊 海浪、🤍 白噪声（各 60 秒，可循环）
+- 你已有的音频文件也会自动注册到曲目库
+- 在 `/audio` 页可上传更多音频或管理曲目
 
 ---
 
-## Data Storage
+## 数据存储
 
-| Data | Location |
+| 数据 | 位置 |
 |---|---|
-| Database | `server/data/todolist.db` |
-| Audio files | `server/data/audio/` |
-| Logs | `server/logs/app.log` |
+| 数据库 | `server/data/todolist.db` |
+| 音频文件 | `server/data/audio/` |
+| 日志文件 | `server/logs/app.log` |
 
-All user data stays in `server/data/` — **safe to delete** for a clean reset, or **excluded from git** by default.
+所有用户数据均在 `server/data/` 目录下 —— 删除该目录可重置数据，或保留用于备份迁移。
 
----
-
-## Updating via Git Pull
-
-### ✅ You can pull updates safely — your data won't be touched
-
-**Why it works:**
-- All user data lives in `server/data/` (excluded in `.gitignore`)
-- Source code is in `server/src/` and `client/src/`
-- `git pull` only overwrites tracked source files, **never** ignores files
-
-### Update procedure:
-
-```bash
-# 1. Make sure the server is stopped
-# 2. Pull latest code
-git pull
-
-# 3. Re-install dependencies (in case packages changed)
-cd server && npm install && cd ..
-cd client && npm install && cd ..
-
-# 4. Start again
-npm run dev
-```
-
-### ⚠️ What might require manual migration:
-If an update adds a **new database column**, the server auto‑migrates on startup (see `db.cjs` — uses `ALTER TABLE ADD COLUMN` wrapped in try/catch). Your existing data is **preserved**.
-
-If an update **removes or renames a table**, the release notes will call this out with a migration step.
-
-### 🧪 Verifying after update:
-1. Check that your tasks and ideas still appear
-2. Check that audio files still play
-3. Check the logs at `/logs` for any startup errors
-
----
-
-## Project Structure (tracked in git)
-
-```
-TodoList/
-├── package.json                # Root — concurrently to start both
-├── start.bat                   # One-click launcher (Windows)
-├── start.ps1                   # PowerShell launcher
-├── .gitignore
-├── README.md
-├── server/
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── src/
-│       ├── index.ts            # Express entry + graceful shutdown
-│       ├── db.cjs              # SQLite init (CJS for better-sqlite3)
-│       ├── db.ts               # Re-export for ESM compat
-│       ├── logger.ts           # DB + file dual logger
-│       └── routes/
-│           ├── todos.ts        # Tasks CRUD + time tracking
-│           ├── newIdeas.ts     # Ideas CRUD + promote + export
-│           ├── categories.ts   # Categories CRUD + color
-│           └── audio.ts        # Audio upload / serve / delete
-└── client/
-    ├── package.json
-    ├── tsconfig.json
-    ├── vite.config.ts
-    ├── index.html
-    └── src/
-        ├── main.tsx
-        ├── App.tsx
-        ├── palette.ts          # Color palette for categories
-        ├── api/index.ts        # API client
-        ├── types/index.ts      # TypeScript types
-        ├── contexts/
-        │   └── WhiteNoiseContext.tsx
-        ├── components/
-        │   ├── Sidebar.tsx
-        │   ├── MiniPlayer.tsx
-        │   ├── TodoList.tsx
-        │   ├── TodoDetail.tsx
-        │   ├── ImmersionView.tsx
-        │   ├── NewIdeasPage.tsx
-        │   ├── IdeaNode.tsx
-        │   ├── CategoriesPage.tsx
-        │   ├── AudioPage.tsx
-        │   ├── ProfilePage.tsx
-        │   └── LogsPage.tsx
-        └── styles/
-            ├── global.css
-            ├── sidebar.css
-            ├── todo.css
-            ├── idea.css
-            ├── category.css
-            └── audio.css
-```
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Backend | Node.js + Express + TypeScript |
-| Frontend | React 18 + Vite + TypeScript |
-| Database | SQLite (better-sqlite3) |
-| Drag & Drop | @dnd-kit |
-| Audio | HTML5 `<audio>` |
-| Style | Pure CSS (warm palette) |
+这些目录被 `.gitignore` 排除，**不会被提交到 git**。

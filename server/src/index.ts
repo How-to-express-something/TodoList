@@ -8,6 +8,9 @@ import newIdeasRouter from './routes/newIdeas.js';
 import categoriesRouter from './routes/categories.js';
 import audioRouter from './routes/audio.js';
 import { logger, requestLogger, getLogEntries, clearLogEntries } from './logger.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { seed } = require('./seed.cjs');
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -42,6 +45,9 @@ app.delete('/api/logs', (_req, res) => {
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
+
+// Run seed on first launch (sample data + default white noise)
+seed();
 
 app.listen(PORT, () => {
   logger.info('SERVER_START', `Server started on port ${PORT}`);

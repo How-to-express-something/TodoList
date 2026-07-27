@@ -20,3 +20,6 @@ Thumbs.db
 
 # npm lock files are tracked intentionally for reproducible installs
 # .pnp.*
+
+# Windows shortcuts
+*.lnk
