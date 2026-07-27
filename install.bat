@@ -3,51 +3,50 @@ chcp 65001 >nul
 title TodoList Install
 
 echo ========================================
-echo      TodoList - 安装程序
+echo      TodoList - Setup
 echo ========================================
 echo.
 
-:: Check Node.js
 where node >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
-    echo [错误] 未检测到 Node.js！
-    echo 请先下载安装: https://nodejs.org/  (LTS 版本)
-    echo 安装完成后重新运行本脚本。
+    echo [ERROR] Node.js not found!
+    echo Please download from: https://nodejs.org/ (LTS version)
     pause
     exit /b 1
 )
 
-echo Node.js 版本:
+echo Node.js version:
 node -v
 echo.
 
-echo [1/3] 安装根目录依赖...
+echo [1/3] Installing root dependencies...
 call npm install --silent
-if %ERRORLEVEL% NEQ 0 ( echo [错误] 安装失败 & pause & exit /b 1 )
+if %ERRORLEVEL% NEQ 0 ( echo [ERROR] Failed & pause & exit /b 1 )
 
-echo [2/3] 安装后端依赖...
+echo [2/3] Installing server dependencies...
 cd server
 call npm install --silent
 cd ..
-if %ERRORLEVEL% NEQ 0 ( echo [错误] 安装失败 & pause & exit /b 1 )
+if %ERRORLEVEL% NEQ 0 ( echo [ERROR] Failed & pause & exit /b 1 )
 
-echo [3/3] 安装前端依赖...
+echo [3/3] Installing client dependencies...
 cd client
 call npm install --silent
 cd ..
-if %ERRORLEVEL% NEQ 0 ( echo [错误] 安装失败 & pause & exit /b 1 )
+if %ERRORLEVEL% NEQ 0 ( echo [ERROR] Failed & pause & exit /b 1 )
 
 echo.
 echo ========================================
-echo      安装完成！
+echo      Setup complete!
 echo.
-echo  启动方式：双击 start.bat
-echo  或运行：   npm run dev
+echo  To start: double-click start.bat
+echo  Or run:   npm run dev
 echo.
-echo  前端：http://localhost:5173
-echo  后端：http://localhost:3001
+echo  Frontend: http://localhost:5173
+echo  Backend:  http://localhost:3001
 echo.
-echo  ※ 首次启动时会自动创建示例数据和默认白噪声
+echo  Sample data and default white noise
+echo  will be created on first launch.
 echo ========================================
 echo.
 pause

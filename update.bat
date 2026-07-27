@@ -3,41 +3,40 @@ chcp 65001 >nul
 title TodoList Update
 
 echo ========================================
-echo      TodoList - 更新程序
+echo      TodoList - Update
 echo ========================================
 echo.
-echo 此操作将从 Git 拉取最新代码并重新安装依赖。
-echo 你的数据（事务、分类、音频文件）不会丢失。
+echo This will pull the latest code and reinstall dependencies.
+echo Your data (tasks, categories, audio files) will be preserved.
 echo.
 
-:: Confirm
-set /p confirm="继续更新？(y/n): "
+set /p confirm="Continue? (y/n): "
 if /i not "%confirm%"=="y" (
-    echo 已取消
+    echo Cancelled
     pause
     exit /b 0
 )
 
-:: Check git
 where git >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
-    echo [错误] 未检测到 Git
-    echo 请手动下载最新源码包替换本目录（保留 server/data 文件夹即可）
+    echo [ERROR] Git not found.
+    echo Please download the latest source manually and extract
+    echo over this directory (keep the server/data folder).
     pause
     exit /b 1
 )
 
 echo.
-echo [1/3] 拉取最新代码...
+echo [1/3] Pulling latest code...
 git pull
 if %ERRORLEVEL% NEQ 0 (
-    echo [错误] 拉取失败，可能有本地冲突
-    echo 请手动解决冲突后重试
+    echo [ERROR] Pull failed. There may be local conflicts.
+    echo Resolve them manually and try again.
     pause
     exit /b 1
 )
 
-echo [2/3] 更新依赖...
+echo [2/3] Updating dependencies...
 call npm install --silent
 cd server
 call npm install --silent
@@ -46,15 +45,15 @@ cd client
 call npm install --silent
 cd ..
 
-echo [3/3] 更新完成！
+echo [3/3] Done!
 echo.
 echo ========================================
-echo      更新成功！
+echo      Update successful!
 echo.
-echo  你的数据和音频文件已保留。
-echo  如果提示有新功能，首次启动时自动生效。
+echo  Your data and audio files are preserved.
+echo  New features will be available on next launch.
 echo.
-echo  启动方式：双击 start.bat
+echo  To start: double-click start.bat
 echo ========================================
 echo.
 pause

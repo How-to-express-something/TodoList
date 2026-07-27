@@ -68,11 +68,11 @@
 ### Windows 一键安装
 
 ```
-1. 安装 Node.js  https://nodejs.org/  (下载 LTS 版本)
-2. 下载项目源码（git clone 或 下载 ZIP 解压）
-3. 双击 install.bat  — 自动安装所有依赖
-4. 双击 start.bat   — 启动应用
-5. 浏览器打开 http://localhost:5173
+1. Install Node.js  https://nodejs.org/  (LTS version)
+2. Download source (git clone or unzip)
+3. Double-click install.bat — installs all dependencies
+4. Double-click start.bat  — starts the app
+5. Open http://localhost:5173
 ```
 
 ### 手动安装（通用）
@@ -97,7 +97,7 @@ npm run dev
 
 ### 更新到最新版
 
-**Windows 用户：双击 `update.bat`**（自动拉取代码 + 重装依赖，保留你的数据）
+**Windows: double-click `update.bat`** (pulls latest code, reinstalls deps, preserves your data)
 
 或在终端中：
 
@@ -108,11 +108,11 @@ cd server && npm install && cd ..
 cd client && npm install && cd ..
 ```
 
-### 首次使用
-- 数据库在首次启动时自动创建（`server/data/todolist.db`）
-- 自动生成**示例数据**：5 个分类、4 个示例事务、11 条灵感（含嵌套树）
-- 自动复制**默认白噪声**（4 首 MP3 背景音）到曲目库
-- 在 `/audio` 页可上传更多音频或管理曲目
+### First Launch
+- Database created automatically at `server/data/todolist.db`
+- **Sample data** auto-generated: 5 categories, 4 tasks, 11 new ideas (with nesting)
+- **Default white noise** (4 MP3 tracks) copied to your library
+- Upload more audio at `/audio`
 
 ---
 
