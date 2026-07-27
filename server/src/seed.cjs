@@ -66,8 +66,8 @@ function seed() {
       if (!existingDataFiles.has(file)) {
         fs.copyFileSync(path.join(DEFAULTS_DIR, file), path.join(AUDIO_DIR, file));
       }
-      // Friendly name from filename
-      const name = file.replace(/\.mp3$/, '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      // Use filename (minus .mp3) as display name
+      const name = file.replace(/\.mp3$/, '');
       insAudio.run(name, file);
       console.log(`  ✓ ${name}`);
     }
@@ -80,8 +80,7 @@ function seed() {
   const insExisting = db.prepare('INSERT INTO audio_tracks (name, file_name) VALUES (?, ?)');
   for (const f of fs.readdirSync(AUDIO_DIR)) {
     if (!registeredFiles.has(f) && f.endsWith('.mp3')) {
-      const name = f.replace(/\.mp3$/, '').replace(/^\d+-\d+-/, '').replace(/-/g, ' ').trim() || 'Untitled';
-      insExisting.run(name, f);
+      insExisting.run(f.replace(/\.mp3$/, ''), f);
       console.log(`  ✓ Registered existing: ${name}`);
     }
   }
