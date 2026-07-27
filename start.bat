@@ -1,34 +1,20 @@
 @echo off
-title TodoList App
-
-echo ========================================
-echo        TodoList App - Local Task Manager
-echo ========================================
+cd /d "%~dp0"
+echo TodoList - Starting...
 echo.
-
 if not exist "server\node_modules" (
-    echo Installing server dependencies...
-    pushd server
+    cd server
     call npm install
-    popd
+    cd ..
 )
-
 if not exist "client\node_modules" (
-    echo Installing client dependencies...
-    pushd client
+    cd client
     call npm install
-    popd
+    cd ..
 )
-
 echo.
-echo Starting...
-echo   Backend  : http://localhost:3001
-echo   Frontend : http://localhost:5173
+echo Backend:  http://localhost:3001
+echo Frontend: http://localhost:5173
 echo.
-echo Press Ctrl+C to stop
-echo ========================================
-echo.
-
 npm run dev
-
 pause

@@ -1,61 +1,34 @@
 @echo off
-title TodoList Update
-
-echo ========================================
-echo      TodoList - Update
-echo ========================================
+cd /d "%~dp0"
+echo TodoList - Update
 echo.
-echo This will pull the latest code and reinstall dependencies.
-echo Your data (tasks, categories, audio files) will be preserved.
+echo This will pull latest code.
+echo Your data is preserved.
 echo.
-
 set /p confirm="Continue? (y/n): "
-if /i not "%confirm%"=="y" (
-    echo Cancelled
-    pause
-    exit /b 0
-)
-
-where git >nul 2>&1
-if %ERRORLEVEL% NEQ 0 (
-    echo [ERROR] Git not found.
-    echo Download the latest source manually and extract
-    echo over this directory (keep the server/data folder).
-    pause
-    exit /b 1
-)
-
+if /i not "%confirm%"=="y" goto cancel
 echo.
-echo [1/3] Pulling latest code...
+echo Step 1/3: Pulling code...
 git pull
-if %ERRORLEVEL% NEQ 0 (
-    echo [ERROR] Pull failed - local conflicts may exist.
-    pause
-    exit /b 1
-)
-echo OK
-echo.
-
-echo [2/3] Updating dependencies...
+if errorlevel 1 goto err
+echo Step 2/3: Installing deps...
 call npm install
-if %ERRORLEVEL% NEQ 0 ( echo [ERROR] Failed & pause & exit /b 1 )
-
-pushd server
+cd server
 call npm install
-popd
-
-pushd client
+cd ..
+cd client
 call npm install
-popd
-echo OK
+cd ..
 echo.
-
-echo ========================================
-echo      Update successful!
-echo.
-echo  Your data and audio files are preserved.
-echo.
-echo  Start: double-click start.bat
-echo ========================================
-echo.
+echo ====== Update complete! ======
+echo Run start.bat to launch
 pause
+exit /b 0
+:err
+echo ====== ERROR ======
+pause
+exit /b 1
+:cancel
+echo Cancelled
+pause
+exit /b 0

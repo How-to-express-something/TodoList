@@ -1,53 +1,37 @@
 @echo off
-title TodoList Install
-
-echo ========================================
-echo      TodoList - Setup
-echo ========================================
+cd /d "%~dp0"
+echo TodoList - Setup
 echo.
-
-where node >nul 2>&1
-if %ERRORLEVEL% NEQ 0 (
-    echo [ERROR] Node.js not found!
-    echo Download from: https://nodejs.org/ (LTS version)
+node -v >NUL 2>&1
+if errorlevel 1 (
+    echo Node.js not found.
+    echo Download from: https://nodejs.org/
     pause
     exit /b 1
 )
-
-echo Node.js version:
-node -v
-echo.
-
-echo [1/3] Installing root dependencies...
+echo Step 1/3: Root dependencies
 call npm install
-if %ERRORLEVEL% NEQ 0 ( echo [ERROR] Failed & pause & exit /b 1 )
+if errorlevel 1 goto err
 echo OK
 echo.
-
-echo [2/3] Installing server dependencies...
-pushd server
+echo Step 2/3: Server dependencies
+cd server
 call npm install
-popd
-if %ERRORLEVEL% NEQ 0 ( echo [ERROR] Failed & pause & exit /b 1 )
+cd ..
+if errorlevel 1 goto err
 echo OK
 echo.
-
-echo [3/3] Installing client dependencies...
-pushd client
+echo Step 3/3: Client dependencies
+cd client
 call npm install
-popd
-if %ERRORLEVEL% NEQ 0 ( echo [ERROR] Failed & pause & exit /b 1 )
-echo OK
+cd ..
+if errorlevel 1 goto err
 echo.
-
-echo ========================================
-echo      Setup complete!
-echo.
-echo  Start: double-click start.bat
-echo  Or:    npm run dev
-echo.
-echo  Frontend: http://localhost:5173
-echo  Backend:  http://localhost:3001
-echo ========================================
-echo.
+echo ====== Setup complete! ======
+echo Run start.bat to launch
 pause
+exit /b 0
+:err
+echo ====== ERROR ======
+pause
+exit /b 1
