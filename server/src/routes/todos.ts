@@ -143,10 +143,10 @@ router.patch('/:id/complete', (req: Request, res: Response) => {
 
 // GET /api/todos/stats/summary — aggregate stats
 router.get('/stats/summary', (_req: Request, res: Response) => {
-  const totalSeconds = db.prepare('SELECT COALESCE(SUM(total_elapsed_seconds), 0) as total FROM todos').get();
-  const completedCount = db.prepare("SELECT COUNT(*) as count FROM todos WHERE status = 'completed'").get();
-  const totalCount = db.prepare('SELECT COUNT(*) as count FROM todos').get();
-  res.json({ ...totalSeconds as any, ...completedCount as any, ...totalCount as any });
+  const totalSeconds = db.prepare('SELECT COALESCE(SUM(total_elapsed_seconds), 0) as total FROM todos').get() as any;
+  const completedCount = db.prepare("SELECT COUNT(*) as c FROM todos WHERE status = 'completed'").get() as any;
+  const totalCount = db.prepare('SELECT COUNT(*) as c FROM todos').get() as any;
+  res.json({ total: totalSeconds.total, completed: completedCount.c, totalCount: totalCount.c });
 });
 
 // DELETE /api/todos/:id — delete a todo (cascades to ideas)

@@ -46,6 +46,8 @@ export default function ImmersionView({ todo, onPause, onComplete }: Props) {
   // Inline editing
   const [editingTitle, setEditingTitle] = useState(false);
   const [editTitle, setEditTitle] = useState('');
+  const [editingDesc, setEditingDesc] = useState(false);
+  const [editDesc, setEditDesc] = useState('');
 
   const loadIdeas = useCallback(async () => {
     const data = await newIdeasApi.list({ todo_id: todo.id });
@@ -132,6 +134,12 @@ export default function ImmersionView({ todo, onPause, onComplete }: Props) {
     await todosApi.update(todo.id, { title: editTitle.trim() });
     setTod(prev => ({ ...prev, title: editTitle.trim() }));
     setEditingTitle(false);
+  };
+
+  const handleSaveDesc = async () => {
+    await todosApi.update(todo.id, { description: editDesc });
+    setTod(prev => ({ ...prev, description: editDesc }));
+    setEditingDesc(false);
   };
 
   const handleMouseDown = useCallback(() => {
@@ -291,12 +299,36 @@ export default function ImmersionView({ todo, onPause, onComplete }: Props) {
           </div>
         )}
 
-        {/* Description with linkify */}
-        {tod.description && (
-          <div style={{ fontSize: 16, color: '#8a7a6a', maxWidth: 500, lineHeight: 1.6, textAlign: 'center' }}>
+        {/* Editable description */}
+        {editingDesc ? (
+          <div style={{ marginBottom: 8, width: '100%', maxWidth: 500, textAlign: 'center' }}>
+            <textarea value={editDesc} onChange={e => setEditDesc(e.target.value)}
+              onBlur={handleSaveDesc}
+              onKeyDown={e => { if (e.key === 'Enter' && e.metaKey) handleSaveDesc(); if (e.key === 'Escape') setEditingDesc(false); }}
+              autoFocus rows={3}
+              style={{
+                width: '100%', fontSize: 16, textAlign: 'center', resize: 'vertical',
+                border: '1px solid rgba(0,0,0,0.1)', borderRadius: 8,
+                padding: '8px 12px', background: 'rgba(255,255,255,0.6)',
+                color: '#8a7a6a', outline: 'none', fontFamily: 'inherit',
+              }} />
+          </div>
+        ) : tod.description ? (
+          <div
+            style={{ fontSize: 16, color: '#8a7a6a', maxWidth: 500, lineHeight: 1.6, textAlign: 'center', cursor: isActuallyPaused ? 'default' : 'pointer' }}
+            onClick={() => { if (!isActuallyPaused) { setEditingDesc(true); setEditDesc(tod.description); } }}
+            title="点击编辑备注"
+          >
             {linkify(tod.description)}
           </div>
-        )}
+        ) : !isActuallyPaused ? (
+          <div
+            style={{ fontSize: 16, color: '#b0a090', maxWidth: 500, lineHeight: 1.6, textAlign: 'center', cursor: 'pointer', fontStyle: 'italic' }}
+            onClick={() => { setEditingDesc(true); setEditDesc(''); }}
+          >
+            + 添加备注（可添加网址链接）
+          </div>
+        ) : null}
 
         {/* Zen element */}
         <div style={{

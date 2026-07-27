@@ -26,7 +26,7 @@ export const todosApi = {
   pause: (id: number) => request<Todo>(`/todos/${id}/pause`, { method: 'PATCH' }),
   complete: (id: number) => request<Todo>(`/todos/${id}/complete`, { method: 'PATCH' }),
   delete: (id: number) => request<{ success: boolean }>(`/todos/${id}`, { method: 'DELETE' }),
-  stats: () => request<{ total: number; count: number }>('/todos/stats/summary'),
+  stats: () => request<{ total: number; completed: number; totalCount: number }>('/todos/stats/summary'),
 };
 
 // New Ideas

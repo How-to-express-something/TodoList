@@ -28,7 +28,7 @@ function calcLevel(totalSeconds: number): { level: number; next: number; progres
 const levelNames = ['', '🌱 新手', '🔥 学徒', '⚡ 进阶', '🌟 达人', '💎 专家', '👑 大师', '🏆 宗师', '🌌 传奇', '✨ 超凡'];
 
 export default function ProfilePage() {
-  const [stats, setStats] = useState<{ total: number; count: number } | null>(null);
+  const [stats, setStats] = useState<{ total: number; completed: number; totalCount: number } | null>(null);
   const { tracks, currentTrack, isPlaying, volume, setVolume, toggle, selectTrack } = useWhiteNoise();
   const navigate = useNavigate();
 
@@ -94,7 +94,7 @@ export default function ProfilePage() {
         }}>
           <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>已完成事务</div>
           <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--text)', marginTop: 4 }}>
-            {stats?.count || 0}
+            {stats?.completed || 0}
           </div>
         </div>
       </div>
