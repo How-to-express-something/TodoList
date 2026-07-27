@@ -1,0 +1,50 @@
+/* Categories Page */
+.categories-page {
+  max-width: 600px;
+}
+
+.category-tree-node {
+  margin: 2px 0;
+}
+
+.category-tree-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition);
+}
+.category-tree-content:hover {
+  background: var(--bg-secondary);
+}
+
+.category-tree-name {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.category-tree-actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.category-tree-content:hover .category-tree-actions {
+  opacity: 1;
+}
+
+.category-tree-children {
+  padding-left: 24px;
+}
+
+/* Category badge (for ideas) — color is set inline via style prop */
+.category-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+}
