@@ -14,6 +14,8 @@ export default function TodoList() {
   // Inline editing
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState('');
+  const [editDesc, setEditDesc] = useState('');
+  const [editingField, setEditingField] = useState<'title' | 'desc'>('title');
 
   const navigate = useNavigate();
 
@@ -81,6 +83,24 @@ export default function TodoList() {
     loadTodos();
   };
 
+  const handleSaveDesc = async (id: number) => {
+    await todosApi.update(id, { description: editDesc });
+    setEditingId(null);
+    loadTodos();
+  };
+
+  const startEditTitle = (todo: Todo) => {
+    setEditingId(todo.id);
+    setEditTitle(todo.title);
+    setEditingField('title');
+  };
+
+  const startEditDesc = (todo: Todo) => {
+    setEditingId(todo.id);
+    setEditDesc(todo.description || '');
+    setEditingField('desc');
+  };
+
   const statusLabel = (s: string) => {
     switch (s) {
       case 'pending': return '待开始';
@@ -111,7 +131,7 @@ export default function TodoList() {
           <div key={todo.id} className={`todo-item ${todo.status}`}>
             <div className={`todo-status-dot ${todo.status}`} />
             <div className="todo-info">
-              {editingId === todo.id ? (
+              {editingId === todo.id && editingField === 'title' ? (
                 <input
                   value={editTitle}
                   onChange={e => setEditTitle(e.target.value)}
@@ -126,14 +146,35 @@ export default function TodoList() {
               ) : (
                 <div
                   className="todo-title"
-                  onClick={() => { setEditingId(todo.id); setEditTitle(todo.title); }}
+                  onClick={() => startEditTitle(todo)}
                   style={{ cursor: 'pointer' }}
                 >
                   {todo.title}
                   {todo.status !== 'completed' && <span style={{ fontSize: 12, color: 'var(--text-tertiary)', marginLeft: 6 }}>✏️</span>}
                 </div>
               )}
-              {todo.description && <div className="todo-desc">{todo.description}</div>}
+              {editingId === todo.id && editingField === 'desc' ? (
+                <textarea
+                  value={editDesc}
+                  onChange={e => setEditDesc(e.target.value)}
+                  onBlur={() => handleSaveDesc(todo.id)}
+                  onKeyDown={e => {
+                    if (e.key === 'Escape') setEditingId(null);
+                    if (e.key === 'Enter' && e.metaKey) handleSaveDesc(todo.id);
+                  }}
+                  autoFocus
+                  rows={2}
+                  style={{ width: '100%', fontSize: 12, resize: 'vertical', marginTop: 4, padding: '4px 8px' }}
+                />
+              ) : (
+                <div
+                  className="todo-desc"
+                  onClick={() => startEditDesc(todo)}
+                  style={{ cursor: 'pointer', color: todo.description ? undefined : 'var(--text-tertiary)', fontStyle: todo.description ? undefined : 'italic' }}
+                >
+                  {todo.description || '添加备注...'}
+                </div>
+              )}
               <div className="todo-meta">
                 {statusLabel(todo.status)}
                 {(todo.total_elapsed_seconds || 0) > 0 && ` · ${Math.floor((todo.total_elapsed_seconds || 0) / 60)} 分钟`}
