@@ -1,5 +1,4 @@
 @echo off
-chcp 65001 >nul
 title TodoList App
 
 echo ========================================
@@ -8,21 +7,17 @@ echo ========================================
 echo.
 
 if not exist "server\node_modules" (
-    echo [1/2] Installing server dependencies...
-    cd server
-    call npm install --silent
-    cd ..
-) else (
-    echo [1/2] Server dependencies ready
+    echo Installing server dependencies...
+    pushd server
+    call npm install
+    popd
 )
 
 if not exist "client\node_modules" (
-    echo [2/2] Installing client dependencies...
-    cd client
-    call npm install --silent
-    cd ..
-) else (
-    echo [2/2] Client dependencies ready
+    echo Installing client dependencies...
+    pushd client
+    call npm install
+    popd
 )
 
 echo.
