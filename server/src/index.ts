@@ -10,54 +10,59 @@ import audioRouter from './routes/audio.js';
 import { logger, requestLogger, getLogEntries, clearLogEntries } from './logger.js';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
+const db = require('./db.cjs');
 const { seed } = require('./seed.cjs');
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = 3001;
 
-// Middleware
-app.use(cors({ origin: 'http://localhost:5173' }));
-app.use(express.json());
-app.use(requestLogger);
+async function main() {
+  // Initialize database (sql.js must load WASM first)
+  await db.init();
 
-// Routes
-app.use('/api/todos', todosRouter);
-app.use('/api/new-ideas', newIdeasRouter);
-app.use('/api/categories', categoriesRouter);
-app.use('/api/audio', audioRouter);
+  // Middleware
+  app.use(cors({ origin: 'http://localhost:5173' }));
+  app.use(express.json());
+  app.use(requestLogger);
 
-// Log viewing endpoints
-app.get('/api/logs', (req, res) => {
-  const limit = Math.min(parseInt(req.query.limit as string) || 100, 500);
-  const offset = parseInt(req.query.offset as string) || 0;
-  const entries = getLogEntries(limit, offset);
-  res.json(entries);
-});
+  // Routes
+  app.use('/api/todos', todosRouter);
+  app.use('/api/new-ideas', newIdeasRouter);
+  app.use('/api/categories', categoriesRouter);
+  app.use('/api/audio', audioRouter);
 
-app.delete('/api/logs', (_req, res) => {
-  clearLogEntries();
-  logger.info('LOG_CLEARED', 'User cleared all log entries');
-  res.json({ success: true });
-});
+  // Log viewing endpoints
+  app.get('/api/logs', (req, res) => {
+    const limit = Math.min(parseInt(req.query.limit as string) || 100, 500);
+    const offset = parseInt(req.query.offset as string) || 0;
+    const entries = getLogEntries(limit, offset);
+    res.json(entries);
+  });
 
-// Health check
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok' });
-});
+  app.delete('/api/logs', (_req, res) => {
+    clearLogEntries();
+    logger.info('LOG_CLEARED', 'User cleared all log entries');
+    res.json({ success: true });
+  });
 
-// Run seed on first launch (sample data + default white noise)
-seed();
+  // Health check
+  app.get('/api/health', (_req, res) => {
+    res.json({ status: 'ok' });
+  });
 
-app.listen(PORT, () => {
-  logger.info('SERVER_START', `Server started on port ${PORT}`);
-  console.log(`✓ Server running at http://localhost:${PORT}`);
-});
+  // Seed sample data if first launch
+  seed();
+
+  app.listen(PORT, () => {
+    logger.info('SERVER_START', `Server started on port ${PORT}`);
+    console.log(`✓ Server running at http://localhost:${PORT}`);
+  });
+}
 
 // Graceful shutdown: close active time segments on exit
 function shutdown(signal: string) {
   console.log(`\nReceived ${signal}. Closing active time segments...`);
-  // Close all in_progress todos' segments
   const activeTodos = db.prepare("SELECT id FROM todos WHERE status = 'in_progress'").all() as any[];
   const now = new Date().toISOString().replace('T', ' ').slice(0, 19);
 
@@ -83,3 +88,8 @@ function shutdown(signal: string) {
 process.on('SIGINT', () => shutdown('SIGINT'));
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGHUP', () => shutdown('SIGHUP'));
+
+main().catch(err => {
+  console.error('Failed to start server:', err);
+  process.exit(1);
+});
