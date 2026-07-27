@@ -1,6 +1,8 @@
-# TodoList — 个人本地代办事务系统
+# TodoList — 个人本地代办事务系统（自用）
 
-纯本地化的个人事务管理网站，内置白噪声系统、沉浸式专注模式、树状灵感（New Idea）记录系统。所有数据保存在本地磁盘，无需联网，无需注册。
+纯个人用的本地化个人事务管理网站，内置白噪声系统、沉浸式专注模式、树状灵感（New Idea）记录系统。所有数据保存在本地磁盘，无需联网，无需注册。
+
+版本1.0
 
 ---
 
@@ -63,10 +65,20 @@
 - **Node.js** ≥ 18（已在 v24 测试通过）
 - **npm** ≥ 9
 
-### 安装
+### Windows 一键安装
+
+```
+1. 安装 Node.js  https://nodejs.org/  (下载 LTS 版本)
+2. 下载项目源码（git clone 或 下载 ZIP 解压）
+3. 双击 install.bat  — 自动安装所有依赖
+4. 双击 start.bat   — 启动应用
+5. 浏览器打开 http://localhost:5173
+```
+
+### 手动安装（通用）
 
 ```bash
-# 克隆或复制项目
+# 克隆项目
 git clone <仓库地址> TodoList
 cd TodoList
 
@@ -74,23 +86,27 @@ cd TodoList
 npm install
 cd server && npm install && cd ..
 cd client && npm install && cd ..
+
+# 启动
+npm run dev
 ```
 
-### 启动
+启动后同时运行：
+- **后端** → `http://localhost:3001`（Express + SQLite）
+- **前端** → `http://localhost:5173`（Vite + React）
 
-**Windows 用户：直接双击 `start.bat`**
+### 更新到最新版
+
+**Windows 用户：双击 `update.bat`**（自动拉取代码 + 重装依赖，保留你的数据）
 
 或在终端中：
 
 ```bash
-npm run dev
+git pull
+npm install
+cd server && npm install && cd ..
+cd client && npm install && cd ..
 ```
-
-这条命令同时启动：
-- **后端** → `http://localhost:3001`（Express + SQLite）
-- **前端** → `http://localhost:5173`（Vite + React）
-
-打开浏览器访问 `http://localhost:5173`。
 
 ### 首次使用
 - 数据库在首次启动时自动创建（`server/data/todolist.db`）
