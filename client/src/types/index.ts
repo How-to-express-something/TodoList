@@ -5,6 +5,7 @@ export interface Todo {
   status: 'pending' | 'in_progress' | 'completed';
   priority: number;
   total_elapsed_seconds?: number;
+  deleted_at?: string | null;
   created_at: string;
   updated_at: string;
   ideas?: NewIdea[];

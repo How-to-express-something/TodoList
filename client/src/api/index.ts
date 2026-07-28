@@ -26,7 +26,11 @@ export const todosApi = {
   pause: (id: number) => request<Todo>(`/todos/${id}/pause`, { method: 'PATCH' }),
   complete: (id: number) => request<Todo>(`/todos/${id}/complete`, { method: 'PATCH' }),
   delete: (id: number) => request<{ success: boolean }>(`/todos/${id}`, { method: 'DELETE' }),
-  stats: () => request<{ total: number; completed: number; totalCount: number }>('/todos/stats/summary'),
+  permanentDelete: (id: number) => request<{ success: boolean }>(`/todos/${id}/permanent`, { method: 'DELETE' }),
+  deleted: () => request<Todo[]>('/todos/deleted'),
+  stats: () => request<{ total: number; completed: number; deleted: number; totalCount: number }>('/todos/stats/summary'),
+  calendar: (year: number, month: number) =>
+    request<{ year: number; month: number; days: Record<string, { count: number; seconds: number }> }>(`/todos/calendar/data?year=${year}&month=${month}`),
 };
 
 // New Ideas

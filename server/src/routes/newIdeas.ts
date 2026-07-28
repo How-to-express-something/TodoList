@@ -130,9 +130,16 @@ router.post('/', (req: Request, res: Response) => {
   const { content, parent_todo_id, parent_idea_id, category_id } = req.body;
   if (!content || !content.trim()) return res.status(400).json({ error: 'Content is required' });
 
+  // If parent_idea_id is set and no category_id provided, inherit parent's category
+  let finalCategoryId = category_id;
+  if (parent_idea_id && finalCategoryId === undefined) {
+    const parent = db.prepare('SELECT category_id FROM new_ideas WHERE id = ?').get(parent_idea_id) as any;
+    if (parent) finalCategoryId = parent.category_id;
+  }
+
   const result = db.prepare(
     'INSERT INTO new_ideas (content, parent_todo_id, parent_idea_id, category_id) VALUES (?, ?, ?, ?)'
-  ).run(content.trim(), parent_todo_id || null, parent_idea_id || null, category_id || null);
+  ).run(content.trim(), parent_todo_id || null, parent_idea_id || null, finalCategoryId ?? null);
 
   const idea = db.prepare('SELECT * FROM new_ideas WHERE id = ?').get(result.lastInsertRowid);
   logger.info('IDEA_CREATE', `Created idea: "${content.trim().substring(0, 50)}..."`, { type: 'idea', id: idea.id });

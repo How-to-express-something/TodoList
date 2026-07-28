@@ -44,7 +44,7 @@ export default function TodoList() {
 
   const handleDelete = async (id: number, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm('确定删除？')) return;
+    if (!confirm('删除后将从列表隐藏，可在"我的"页面永久删除。确认？')) return;
     await todosApi.delete(id);
     loadTodos();
   };

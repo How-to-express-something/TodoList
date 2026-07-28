@@ -87,6 +87,13 @@ export function WhiteNoiseProvider({ children }: { children: ReactNode }) {
     const audio = new Audio(audioApi.playUrl(t.id));
     audio.volume = volume;
     audio.loop = true;
+
+    // Restore saved position
+    try {
+      const saved = localStorage.getItem('todolist_audio_pos_' + t.id);
+      if (saved) audio.currentTime = parseFloat(saved);
+    } catch {}
+
     audio.addEventListener('loadedmetadata', () => setDuration(audio.duration || 0));
     audio.play().then(() => {
       setIsPlaying(true);
@@ -99,12 +106,16 @@ export function WhiteNoiseProvider({ children }: { children: ReactNode }) {
 
   const pause = useCallback(() => {
     if (audioRef.current && isPlaying) {
+      // Save position before pausing
+      try {
+        if (currentTrack) localStorage.setItem('todolist_audio_pos_' + currentTrack.id, String(audioRef.current.currentTime));
+      } catch {}
       audioRef.current.pause();
       setIsPlaying(false);
       wasPlayingBeforePause.current = false;
       stopProgressTracking();
     }
-  }, [isPlaying, stopProgressTracking]);
+  }, [isPlaying, stopProgressTracking, currentTrack]);
 
   const stop = useCallback(() => {
     if (audioRef.current) {

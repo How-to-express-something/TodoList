@@ -79,6 +79,7 @@ async function init() {
   _db.run(SCHEMA);
   try { _db.run("ALTER TABLE todos ADD COLUMN total_elapsed_seconds INTEGER DEFAULT 0"); } catch {}
   try { _db.run("ALTER TABLE categories ADD COLUMN color TEXT DEFAULT NULL"); } catch {}
+  try { _db.run("ALTER TABLE todos ADD COLUMN deleted_at TEXT DEFAULT NULL"); } catch {}
   save();
   process.on('exit', save);
   process.on('SIGINT', () => { save(); process.exit(0); });
